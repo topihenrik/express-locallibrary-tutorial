@@ -1,0 +1,35 @@
+extends layout 
+
+block content
+    h1 #{title}: #{book.name}
+
+    if book_bookinstances.length
+        p #[strong Delete the following books before attempting to delete this genre.]
+
+        div(style="margin-left:20px;margin-top:20px")
+
+            h4 Book Instances
+
+            d1 
+            each bookinstance in book_bookinstances
+                hr 
+                dt 
+                    a(href=bookinstance.url)  #{bookinstance._id}
+                // dd #{bookinstance.status}
+                if bookinstance.status=='Available'
+                    dd.text-success #{bookinstance.status}
+                else if bookinstance.status=='Maintenance'
+                    dd.text-danger #{bookinstance.status}
+                else
+                    dd.text-warning #{bookinstance.status}
+                p #[strong Imprint:] #{bookinstance.imprint}
+            hr
+
+    else 
+        p Do you really want to delete this Book?
+
+        form(method="POST" action="")
+            div.form-group
+                input#bookid.form-control(type="hidden", name="bookid", required="true", value=book._id)
+
+            button.btn.btn-primary(type="submit") Delete 

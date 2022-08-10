@@ -6,8 +6,31 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var catalogRouter = require('./routes/catalog');
+var wiki = require("./wiki");
+var compression = require("compression");
+var helmet = require("helmet");
 
 var app = express();
+
+app.use(compression());
+app.use(helmet());
+
+
+var mongoose = require("mongoose");
+var mongoDB = "mongodb+srv://admin:salis123@cluster0.5sypk.mongodb.net/?retryWrites=true&w=majority";
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true});
+var db = mongoose.connection;
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
+
+
+app.use("/wiki", wiki);
+
+
+
+
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,6 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/catalog', catalogRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
